@@ -1,57 +1,19 @@
-require "colorize"
-require_relative "lib/mastermind"
+require 'colorize'
+require_relative 'lib/mastermind'
 
+# # Ask user who is going to play
+# player = 0
+
+# until player == 1 || player == 2
+#   puts "Choose your game mode"
+#   puts "1. Guess mode"
+#   puts "2. Secret code creator mode"
+#   player = gets.chomp.to_i
+# end
+
+# puts player == 1 ? "\n\n*** Guess mode ***\n\n" : "*** Secret code creator mode ***\n\n"
 
 # Create random secret code
 game = Mastermind.new
 
-# Cycle until attempt limit is reached
-Mastermind::ATTEMPT_LIMIT.times do
-
-  # Ask user guess until slots are filled
-  user_guess = []
-  until user_guess.length == Mastermind::SECRET_CODE_SLOTS
-    puts "You have chosen #{user_guess.length} out of #{Mastermind::SECRET_CODE_SLOTS}.\n\n"
-
-    unless user_guess.empty?
-      puts "Your current guess is:"
-      puts user_guess.map {|color| color.to_s.colorize(color)} .join(" ")
-      puts "\n"
-    end
-
-    puts "Choose one of the following colors:"
-    puts Mastermind::COLORS.map {|color| color.to_s.colorize(color)} .join(" ")
-    puts "\n>"
-    user_choice = gets.chomp.to_sym
-
-    # check if color list includes user choice
-    if Mastermind::COLORS.include? user_choice
-      user_guess.push user_choice
-    end
-  end
-  # Save user guess
-  game.add_user_guess(user_guess)
-
-  # Give feedback
-  puts "Your guess is:"
-  puts game.user_guesses.last.map {|color| color.to_s.colorize(color)} .join(" ")
-  puts "These are your hints:"
-  puts game.play.map {|color| color.to_s.colorize(color)} .join(" ")
-
-  # If guess is correct, end loop
-  break if game.play.count {|item| item == :red} == Mastermind::SECRET_CODE_SLOTS
-end
-
-# Give win/lose message
-if game.play.count {|item| item == :red} == Mastermind::SECRET_CODE_SLOTS
-  puts "You won!\n\n"
-else
-  puts "You lost!\n\n"
-end
-
-# Show last guess and secret code
-puts "Your last guess was:"
-puts game.user_guesses.last.map {|color| color.to_s.colorize(color)} .join(" ")
-
-puts "The secret code is:"
-puts game.secret_code.map {|color| color.to_s.colorize(color)} .join(" ")
+game.run_guess_mode
